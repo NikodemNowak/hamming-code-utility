@@ -4,12 +4,22 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        KodHamminga kodHamminga = new KodHamminga();
+        HammingCode hamming = new HammingCode();
+
+        // Przykładowa wiadomość do zakodowania 1
         boolean[] message = {true, false, true, false, true, false, true, false};
-        boolean[] code = kodHamminga.messageToCode1(message);
+        boolean[] code = hamming.messageToCode1(message);
         System.out.println("Wiadomość: " + Arrays.toString(message));
         System.out.println("Kod Hamminga: " + Arrays.toString(code));
         code[11] = !code[11]; // Wprowadzenie błędu
-        kodHamminga.verifyCode(code);
+        hamming.whichBitBroken(hamming.verifyCode(code));
+
+        // Przykładowa wiadomość do zakodowania 2
+        boolean[] message2 = {false, true, false, true, false, true, false, true};
+        boolean[] code2 = hamming.messageToCode1(message2);
+        System.out.println("Wiadomość: " + Arrays.toString(message2));
+        System.out.println("Kod Hamminga: " + Arrays.toString(code2));
+        code2[7] = !code2[7]; // Wprowadzenie błędu
+        hamming.whichBitBroken(hamming.verifyCode(code2));
     }
 }

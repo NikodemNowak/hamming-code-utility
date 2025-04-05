@@ -2,7 +2,7 @@ package org.zespol;
 
 import java.util.Arrays;
 
-public class KodHamminga {
+public class HammingCode {
     boolean[] message = new boolean[8];
     boolean[][] parityBitsControlMatrix1 = {{
         true, false, true, false, true, false, true, false, true, false, true, false
@@ -52,6 +52,17 @@ public class KodHamminga {
 
         return resultCode;
     }
+
+    public void whichBitBroken( boolean[] resultCode ){
+        int index = 0;
+        for (int i = 0; i < resultCode.length; i++) {
+            if (resultCode[i]) {
+                index += Math.pow(2, i);
+            }
+        }
+        System.out.println("Błąd w bicie: " + index);
+    }
+
 
 
 
