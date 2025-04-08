@@ -50,7 +50,7 @@ public class HammingCode {
             }
         }
 
-        System.out.println("resultCode: " + Arrays.toString(resultCode));
+        System.out.println("Syndrom: " + Arrays.toString(resultCode));
 
         return resultCode;
     }
@@ -59,18 +59,19 @@ public class HammingCode {
         boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1Bit);
         for(int i=0; i<transposedMatrix.length; i++){
             boolean[] row = transposedMatrix[i];
-            boolean isOk = true;
+            boolean isBroekn = true; // Zakładamy, że bit kodu jest uszkodzony
             for(int j=0; j<row.length; j++){
                 if(row[j] != resultCode[j]){
-                    isOk = false;
+                    isBroekn = false;   // Jeśli chociaż 1 bit wiersza różni się od syndromu tzn, że nie ten bit kodu jest uszkodzony
                     break;
                 }
             }
-            if(isOk){
+            if(isBroekn){
                 System.out.println("Bit " + (i+1) + " jest uszkodzony.");
                 return;
             }
         }
+        System.out.println("Nie znaleziono uszkodzonego bitu.");
     }
 
     public static boolean[][] transposeMatrix(boolean[][] matrix){
@@ -145,5 +146,43 @@ public class HammingCode {
 
         System.out.println("Syndrom: " + Arrays.toString(syndrome));
         return syndrome;
+    }
+
+
+    public void whichBitBroken2Bit(boolean[] syndrome){
+        boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix2Bits);
+        for(int i=0; i<transposedMatrix.length; i++){
+            boolean[] row = transposedMatrix[i];
+            boolean isBroekn = true;
+            for(int j=0; j<row.length; j++){
+                if(row[j] != syndrome[j]){
+                    isBroekn = false;
+                    break;
+                }
+            }
+            if(isBroekn){
+                System.out.println("Bit " + (i+1) + " jest uszkodzony.");
+                return;
+            }
+        }
+        System.out.println("Nie znaleziono 1 uszkodzonego bitu. Sprawdź czy nie ma 2 uszkodzonych bitów.");
+
+        // Sprawdzamy kombinacje 2 bitów
+        // Dla dwóch uszkodzonych bitów, syndrom będzie XORem odpowiednich wierszy macierzy
+        for (int i = 0; i < transposedMatrix.length; i++) {
+            for (int j = i+1; j < transposedMatrix.length; j++) {
+                boolean[] combinedSyndrome = new boolean[syndrome.length];
+                for (int k = 0; k < syndrome.length; k++) {
+                    combinedSyndrome[k] = transposedMatrix[i][k] ^ transposedMatrix[j][k];
+                }
+
+                if (Arrays.equals(combinedSyndrome, syndrome)) {
+                    System.out.println("Wiem, że 2 bity są uszkodzone, ale nie potrafię określic, które to bity.");
+                    return;
+                }
+            }
+        }
+
+        System.out.println("Nie znaleziono 2 uszkodzonych bitów.");
     }
 }

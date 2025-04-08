@@ -36,9 +36,9 @@ public class Main {
         boolean[] code3 = hamming.messageToCode1Bit(message3);
         System.out.println("Wiadomość: " + Arrays.toString(message3));
         System.out.println("Kod Hamminga: " + Arrays.toString(code3));
-        code3[2] = !code3[2]; // Wprowadzenie błędu
-        System.out.println("Kod z błędem: " + Arrays.toString(code3));
+        // BRAK BŁĘDU
         hamming.whichBitBroken1Bit(hamming.calculateSyndrome1Bit(code3));
+
 
         System.out.println("----------------------------------");
 
@@ -49,6 +49,28 @@ public class Main {
         boolean[] code4 = hamming.messageToCode2Bits(message4);
         System.out.println("Wiadomość: " + Arrays.toString(message4));
         System.out.println("Kod Hamminga: " + Arrays.toString(code4));
-        hamming.calculateSyndrome2Bits(code4);
+        // Brak błędu
+        hamming.whichBitBroken2Bit(hamming.calculateSyndrome2Bits(code4));
+
+        System.out.println("----------------------------------");
+        // Przykładowa wiadomość do zakodowania 5
+        boolean[] message5 = {true, true, false, false, false, false, false, false};
+        boolean[] code5 = hamming.messageToCode2Bits(message5);
+        System.out.println("Wiadomość: " + Arrays.toString(message5));
+        System.out.println("Kod Hamminga: " + Arrays.toString(code5));
+        code5[11] = !code5[11]; // Wprowadzenie błędu
+        System.out.println("Kod z błędem: " + Arrays.toString(code5));
+        hamming.whichBitBroken2Bit(hamming.calculateSyndrome2Bits(code5));
+
+        System.out.println("----------------------------------");
+        // Przykładowa wiadomość do zakodowania 6
+        boolean[] message6 = {true, true, false, false, true, true, false, false};
+        boolean[] code6 = hamming.messageToCode2Bits(message6);
+        System.out.println("Wiadomość: " + Arrays.toString(message6));
+        System.out.println("Kod Hamminga: " + Arrays.toString(code6));
+        code6[1] = !code6[1]; // Wprowadzenie błędu
+        code6[3] = !code6[3]; // Wprowadzenie błędu
+        System.out.println("Kod z błędem: " + Arrays.toString(code6));
+        hamming.whichBitBroken2Bit(hamming.calculateSyndrome2Bits(code6));
     }
 }
