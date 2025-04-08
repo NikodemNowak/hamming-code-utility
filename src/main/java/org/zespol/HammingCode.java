@@ -127,20 +127,23 @@ public class HammingCode {
     }
 
     public boolean[] calculateSyndrome2Bits(boolean[] code) { // Lepsza nazwa funkcji
-        boolean[] syndrome = new boolean[parityBitsControlMatrix2Bits.length]; // 5 bitów
-        // Iteruj przez wiersze macierzy H (każdy wiersz to jedno sprawdzenie parzystości)
-        for (int i = 0; i < parityBitsControlMatrix2Bits.length; i++) {
-            boolean parityCheckResult = false;
-            // Iteruj przez kolumny macierzy H (bity w kodzie)
-            for (int j = 0; j < code.length; j++) {
-                // Jeśli H[i][j] jest true (ten bit jest sprawdzany) ORAZ bit kodu code[j] jest true
-                if (parityBitsControlMatrix2Bits[i][j] && code[j]) {
-                    parityCheckResult ^= true; // Zmień wynik XOR
-                }
+        boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix2Bits);
+        boolean[] syndrome = new boolean[5];
+        boolean[][] temp = new boolean[code.length][transposedMatrix[0].length];
+
+        for (int i=0; i<code.length; i++) {
+            if (code[i]) {
+                System.arraycopy(transposedMatrix[i], 0, temp[i], 0, transposedMatrix[i].length);
             }
-            syndrome[i] = parityCheckResult; // Zapisz wynik i-tego sprawdzenia parzystości
         }
-        System.out.println("Syndrome: " + Arrays.toString(syndrome)); // Użyj terminu "Syndrome"
+
+        for (boolean[] booleans : temp) {
+            for (int j = 0; j < booleans.length; j++) {
+                syndrome[j] ^= booleans[j];
+            }
+        }
+
+        System.out.println("Syndrom: " + Arrays.toString(syndrome));
         return syndrome;
     }
 }
