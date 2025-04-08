@@ -3,8 +3,8 @@ package org.zespol;
 import java.util.Arrays;
 
 public class HammingCode {
-    boolean[] message = new boolean[8];
-    boolean[][] parityBitsControlMatrix1 = {{
+
+    boolean[][] parityBitsControlMatrix1Bit = {{
         true, false, true, false, true, false, true, false, true, false, true, false
     }, {
         false, true, true, false, false, true, true, false, false, true, true, false
@@ -14,13 +14,15 @@ public class HammingCode {
         false, false, false, false ,false, false, false, true, true, true, true, true
     }};
 
-    public boolean[] messageToCode1(boolean[] message) {
+    public boolean[] messageToCode1Bit(boolean[] message) {
         boolean[] code = new boolean[12];
-        for (int i = 0; i < message.length; i++) {
-            if (i == 0 || i == 2 || i == 4 || i == 8) {
+        int j = 0;
+        for (int i = 0; i < code.length; i++) {
+            if (i == 0 || i == 1 || i == 3 || i == 7) {
                 continue;
             }
-            code[i] = message[i];
+            code[i] = message[j];
+            j++;
         }
 
         code[0] = code[2] ^ code[4] ^ code[6] ^ code[8] ^ code[10];
@@ -31,8 +33,8 @@ public class HammingCode {
         return code;
     }
 
-    public boolean[] verifyCode(boolean[] code) {
-        boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1);
+    public boolean[] calculateSyndrome1Bit(boolean[] code) {
+        boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1Bit);
         boolean[] resultCode = new boolean[4];
         boolean[][] temp = new boolean[code.length][transposedMatrix[0].length];
 
@@ -53,18 +55,23 @@ public class HammingCode {
         return resultCode;
     }
 
-    public void whichBitBroken( boolean[] resultCode ){
-        int index = 0;
-        for (int i = 0; i < resultCode.length; i++) {
-            if (resultCode[i]) {
-                index += Math.pow(2, i);
+    public void whichBitBroken1Bit(boolean[] resultCode){
+        boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1Bit);
+        for(int i=0; i<transposedMatrix.length; i++){
+            boolean[] row = transposedMatrix[i];
+            boolean isOk = true;
+            for(int j=0; j<row.length; j++){
+                if(row[j] != resultCode[j]){
+                    isOk = false;
+                    break;
+                }
+            }
+            if(isOk){
+                System.out.println("Bit " + (i+1) + " jest uszkodzony.");
+                return;
             }
         }
-        System.out.println("Błąd w bicie: " + index);
     }
-
-
-
 
     public static boolean[][] transposeMatrix(boolean[][] matrix){
         int m = matrix.length;
@@ -79,5 +86,61 @@ public class HammingCode {
         }
 
         return transposedMatrix;
+    }
+
+    boolean[][] parityBitsControlMatrix2Bits = {{
+            true, false, true, false, true, false, true, false, true, false, true, false, false
+    }, {
+            false, true, true, false, false, true, true, false, false, true, true, false, false
+    }, {
+            false, false, false, true, true, true, true, false, false, false, false, true, false
+    }, {
+            false, false, false, false ,false, false, false, true, true, true, true, true, false
+    },{
+            true, true, true, true, true, true, true, true, true, true, true, true, true
+    }
+    };
+
+    public boolean[] messageToCode2Bits(boolean[] message) {
+        boolean[] code = new boolean[13];
+        int j = 0;
+
+        // Najpierw umieść bity wiadomości w odpowiednich pozycjach
+        for (int i = 0; i < code.length; i++) {
+            if (i == 0 || i == 1 || i == 3 || i == 7 || i == 12) {
+                continue;
+            }
+            code[i] = message[j];
+            j++;
+        }
+
+        // Pierwsza iteracja - oblicz bity parzystości bez uwzględnienia bitu 12
+        code[0] = code[2] ^ code[4] ^ code[6] ^ code[8] ^ code[10];
+        code[1] = code[2] ^ code[5] ^ code[6] ^ code[9] ^ code[10];
+        code[3] = code[4] ^ code[5] ^ code[6] ^ code[11];
+        code[7] = code[8] ^ code[9] ^ code[10] ^ code[11];
+
+        // Oblicz bit parzystości całkowitej
+        code[12] = code[0] ^ code[1] ^ code[2] ^ code[3] ^ code[4] ^ code[5] ^ code[6] ^ code[7] ^ code[8] ^ code[9] ^ code[10] ^ code[11];
+
+        return code;
+    }
+
+    public boolean[] calculateSyndrome2Bits(boolean[] code) { // Lepsza nazwa funkcji
+        boolean[] syndrome = new boolean[parityBitsControlMatrix2Bits.length]; // 5 bitów
+        // Iteruj przez wiersze macierzy H (każdy wiersz to jedno sprawdzenie parzystości)
+        for (int i = 0; i < parityBitsControlMatrix2Bits.length; i++) {
+            boolean parityCheckResult = false;
+            // Iteruj przez kolumny macierzy H (bity w kodzie)
+            for (int j = 0; j < code.length; j++) {
+                // Jeśli H[i][j] jest true (ten bit jest sprawdzany) ORAZ bit kodu code[j] jest true
+                if (parityBitsControlMatrix2Bits[i][j] && code[j]) {
+                    parityCheckResult ^= true; // Zmień wynik XOR
+                }
+            }
+            syndrome[i] = parityCheckResult; // Zapisz wynik i-tego sprawdzenia parzystości
+        }
+        System.out.println("Syndrome: " + Arrays.toString(syndrome)); // Użyj terminu "Syndrome"
+        return syndrome;
     }
 }
