@@ -42,7 +42,7 @@ public class Main {
 
         System.out.println("----------------------------------");
 
-        System.out.println("Przykłady dla rozszerzonego kodu Hamminga (13,8): ");
+        System.out.println("Przykłady dla rozszerzonego kodu Hamminga (16,8): ");
 
         // Przykładowa wiadomość do zakodowania 4
         boolean[] message4 = {true, false, false, false, false, false, false, false};

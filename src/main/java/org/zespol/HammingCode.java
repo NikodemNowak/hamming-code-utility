@@ -89,47 +89,37 @@ public class HammingCode {
         return transposedMatrix;
     }
 
-    boolean[][] parityBitsControlMatrix2Bits = {{
-            true, false, true, false, true, false, true, false, true, false, true, false, false
-    }, {
-            false, true, true, false, false, true, true, false, false, true, true, false, false
-    }, {
-            false, false, false, true, true, true, true, false, false, false, false, true, false
-    }, {
-            false, false, false, false ,false, false, false, true, true, true, true, true, false
-    },{
-            true, true, true, true, true, true, true, true, true, true, true, true, true
-    }
+    boolean[][] parityBitsControlMatrix2Bits = {
+            {true, false, true, false, true, false, true, false,    true, false, false, false, false, false, false, false},
+            {false, true, true, false, false, true, true, false,    false, true, false, false, false, false, false, false},
+            {false, false, false, true, true, true, true, false,    false, false, true, false, false, false, false, false},
+            {false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false},
+            {true, true, false, false, false, false, false, false,  false, false, false, false, true, false, false, false},
+            {false, false, true, true, false, false, false, false,  false, false, false, false, false, true, false, false},
+            {false, false, false, false, true, true, false, false,  false, false, false, false, false, false, true, false},
+            {false, false, false, false, false, false, true, true,  false, false, false, false, false, false, false, true}
     };
 
     public boolean[] messageToCode2Bits(boolean[] message) {
-        boolean[] code = new boolean[13];
-        int j = 0;
+        boolean[] code = new boolean[16];
 
-        // Najpierw umieść bity wiadomości w odpowiednich pozycjach
-        for (int i = 0; i < code.length; i++) {
-            if (i == 0 || i == 1 || i == 3 || i == 7 || i == 12) {
-                continue;
-            }
-            code[i] = message[j];
-            j++;
-        }
+        System.arraycopy(message, 0, code, 0, message.length);
 
-        // Pierwsza iteracja - oblicz bity parzystości bez uwzględnienia bitu 12
-        code[0] = code[2] ^ code[4] ^ code[6] ^ code[8] ^ code[10];
-        code[1] = code[2] ^ code[5] ^ code[6] ^ code[9] ^ code[10];
-        code[3] = code[4] ^ code[5] ^ code[6] ^ code[11];
-        code[7] = code[8] ^ code[9] ^ code[10] ^ code[11];
-
-        // Oblicz bit parzystości całkowitej
-        code[12] = code[0] ^ code[1] ^ code[2] ^ code[3] ^ code[4] ^ code[5] ^ code[6] ^ code[7] ^ code[8] ^ code[9] ^ code[10] ^ code[11];
+        code[8] = code[0] ^ code[2] ^ code[4] ^ code[6];
+        code [9] = code[1] ^ code[2] ^ code[5] ^ code[6];
+        code[10] = code[3] ^ code[4] ^ code[5] ^ code[6];
+        code[11] = code[7];
+        code[12] = code[0] ^ code[1];
+        code[13] = code[2] ^ code[3];
+        code[14] = code[4] ^ code[5];
+        code[15] = code[6] ^ code[7];
 
         return code;
     }
 
     public boolean[] calculateSyndrome2Bits(boolean[] code) { // Lepsza nazwa funkcji
         boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix2Bits);
-        boolean[] syndrome = new boolean[5];
+        boolean[] syndrome = new boolean[8];
         boolean[][] temp = new boolean[code.length][transposedMatrix[0].length];
 
         for (int i=0; i<code.length; i++) {
@@ -165,7 +155,8 @@ public class HammingCode {
                 return;
             }
         }
-        System.out.println("Nie znaleziono 1 uszkodzonego bitu. Sprawdź czy nie ma 2 uszkodzonych bitów.");
+
+        System.out.println("Nie znaleziono 1 uszkodzonego bitu. Sprawdzam czy nie ma 2 uszkodzonych bitów.");
 
         // Sprawdzamy kombinacje 2 bitów
         // Dla dwóch uszkodzonych bitów, syndrom będzie XORem odpowiednich wierszy macierzy
@@ -177,7 +168,7 @@ public class HammingCode {
                 }
 
                 if (Arrays.equals(combinedSyndrome, syndrome)) {
-                    System.out.println("Wiem, że 2 bity są uszkodzone, ale nie potrafię określic, które to bity.");
+                    System.out.println("Znaleziono 2 uszkodzone bity: " + (i+1) + " i " + (j+1));
                     return;
                 }
             }
