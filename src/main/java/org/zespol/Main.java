@@ -1,20 +1,15 @@
 package org.zespol;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        HammingCode hamming = new HammingCode();
         String path;
         FileOperations fileOperations = new FileOperations();
         Scanner sc = new Scanner(System.in);
         byte[] dataByteFromFile;
-        boolean[][] booleanReadData = new boolean[0][];
         boolean[][] encodedData;
         boolean[][] encodedDataReadFromFile;
-        boolean[] booleanEncodedData;
-        boolean[][] decodedData;
 
         while (true) {
             System.out.println("1. Kodowanie");
@@ -48,6 +43,10 @@ public class Main {
                     encodedDataReadFromFile = fileOperations.readEncodedFromFile(path);
                     String someText = fileOperations.decodeData(encodedDataReadFromFile);
                     System.out.println("Odkodowane dane: " + someText);
+                    String fileName2 = path.substring(path.lastIndexOf("/") + 1);
+                    int underscoreIndex = fileName2.indexOf("_");
+                    String savePath = "./data/" + (underscoreIndex > 0 ? fileName2.substring(0, underscoreIndex) : fileName2) + "_decoded.txt";
+                    fileOperations.writeTextTofile(someText, savePath);
 
                     break;
                 case 3:
@@ -57,16 +56,5 @@ public class Main {
                     System.out.println("Niepoprawny wybór. Wybierz ponownie.");
             }
         }
-    }
-
-    public static boolean[][] boolean1dto2d(boolean[] booleans) {
-        int byteCount = booleans.length / 8;
-        boolean[][] data = new boolean[byteCount][];
-        for (int i = 0; i < byteCount; i+=7) {
-            boolean[] temp = new boolean[8];
-            System.arraycopy(booleans, i, temp, 0, 8);
-            data[i] = temp;
-        }
-        return data;
     }
 }

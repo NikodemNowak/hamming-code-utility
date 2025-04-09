@@ -90,12 +90,21 @@ public class FileOperations {
             byte b = 0;
             for (int j = 0; j < 8; j++) {
                 if (decodedBits[j]) {
-                    b |= (1 << j);
+                    b |= (byte) (1 << j);
                 }
             }
             bytes[i] = b;
         }
         return new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    public void writeTextTofile(String text, String path) {
+        File file = new File(path);
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            outputStream.write(text.getBytes());
+        } catch (IOException e) {
+            System.err.println("Błąd podczas zapisu do pliku: " + e.getMessage());
+        }
     }
 
     public boolean[] bytesToBooleanArray(byte[] input) {
