@@ -176,11 +176,23 @@ public class HammingCode {
         return new int[]{-1}; // Jeśli nie znaleziono uszkodzonego bitu, zwracamy -1
     }
 
-    boolean[] repairBit2Bit(boolean[] code, int[] brokenBits) {
-        for (int brokenBit : brokenBits) {
-            brokenBit--; // Zmniejszamy o 1, aby uzyskać indeks tablicy
-            if (brokenBit >= 0 && brokenBit < code.length) {
-                code[brokenBit] = !code[brokenBit]; // Naprawiamy uszkodzony bit
+    public boolean[] repairBit2Bit(boolean[] code, int[] brokenBits) {
+
+        boolean isBroken = false;
+        for (int bit : brokenBits) {
+            if (bit == -1) {
+                return code;
+            } else {
+                isBroken = true;
+            }
+        }
+
+        if (isBroken){
+            for (int brokenBit : brokenBits) {
+                brokenBit--; // Zmniejszamy o 1, aby uzyskać indeks tablicy
+                if (brokenBit >= 0 && brokenBit < code.length) {
+                    code[brokenBit] = !code[brokenBit]; // Naprawiamy uszkodzony bit
+                }
             }
         }
         return code;
