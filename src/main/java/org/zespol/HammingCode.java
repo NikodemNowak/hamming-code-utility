@@ -197,4 +197,11 @@ public class HammingCode {
         }
         return code;
     }
+
+    public boolean[] codeToMessage2Bits(boolean[] code) {
+        boolean[] message = new boolean[8];
+        System.arraycopy(code, 0, message, 0, message.length);
+        return message;
+    }
 }
+
