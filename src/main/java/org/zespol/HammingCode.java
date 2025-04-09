@@ -139,12 +139,10 @@ public class HammingCode {
             }
         }
 
-        System.out.println("Syndrom: " + Arrays.toString(syndrome));
         return syndrome;
     }
 
-
-    public void whichBitBroken2Bit(boolean[] syndrome){
+    public int[] whichBitBroken2Bit(boolean[] syndrome){
         boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix2Bits);
         for(int i=0; i<transposedMatrix.length; i++){
             boolean[] row = transposedMatrix[i];
@@ -156,12 +154,9 @@ public class HammingCode {
                 }
             }
             if(isBroekn){
-                System.out.println("Bit " + (i+1) + " jest uszkodzony.");
-                return;
+                return new int[]{i+1}; // Zwracamy numer uszkodzonego bitu
             }
         }
-
-        System.out.println("Nie znaleziono 1 uszkodzonego bitu. Sprawdzam czy nie ma 2 uszkodzonych bitów.");
 
         // Sprawdzamy kombinacje 2 bitów
         // Dla dwóch uszkodzonych bitów, syndrom będzie XORem odpowiednich wierszy macierzy
@@ -173,12 +168,21 @@ public class HammingCode {
                 }
 
                 if (Arrays.equals(combinedSyndrome, syndrome)) {
-                    System.out.println("Znaleziono 2 uszkodzone bity: " + (i+1) + " i " + (j+1));
-                    return;
+                    return new int[]{i+1, j+1}; // Zwracamy numery uszkodzonych bitów
                 }
             }
         }
 
-        System.out.println("Nie znaleziono 2 uszkodzonych bitów.");
+        return new int[]{-1}; // Jeśli nie znaleziono uszkodzonego bitu, zwracamy -1
+    }
+
+    boolean[] repairBit2Bit(boolean[] code, int[] brokenBits) {
+        for (int brokenBit : brokenBits) {
+            brokenBit--; // Zmniejszamy o 1, aby uzyskać indeks tablicy
+            if (brokenBit >= 0 && brokenBit < code.length) {
+                code[brokenBit] = !code[brokenBit]; // Naprawiamy uszkodzony bit
+            }
+        }
+        return code;
     }
 }
