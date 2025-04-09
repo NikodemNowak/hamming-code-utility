@@ -5,7 +5,7 @@ import org.zespol.HammingCode;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class HammingTest {
 
@@ -47,7 +47,7 @@ public class HammingTest {
         } else {
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class HammingTest {
         } else {
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
     @Test
@@ -82,15 +82,17 @@ public class HammingTest {
         boolean[] brokenCode = code.clone();
         boolean[] syndrome = hamming.calculateSyndrome1Bit(brokenCode);
         int brokenBit = hamming.whichBitBroken1Bit(syndrome);
-        boolean[] repairedCode = new boolean[brokenCode.length];
+        System.out.println("Uszkodzony bit: " + brokenBit);
+        boolean[] repairedCode;
         if (brokenBit != -1) {
             System.out.println("Uszkodzony bit: " + brokenBit);
             repairedCode = hamming.repairBit1Bit(brokenCode, brokenBit);
             System.out.println("Kod po poprawieniu błędu: " + Arrays.toString(repairedCode));
         } else {
+            repairedCode = hamming.repairBit1Bit(brokenCode, brokenBit);
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
     @Test
@@ -103,15 +105,16 @@ public class HammingTest {
         boolean[] brokenCode = code.clone();
         boolean[] syndrome = hamming.calculateSyndrome2Bits(brokenCode);
         int[] brokenBits = hamming.whichBitBroken2Bit(syndrome);
-        boolean[] repairedCode = new boolean[brokenCode.length];
+        boolean[] repairedCode;
         if (brokenBits[0] != -1) {
             System.out.println("Uszkodzony bit: " + Arrays.toString(brokenBits));
             repairedCode = hamming.repairBit2Bit(brokenCode, brokenBits);
             System.out.println("Kod po poprawieniu błędu: " + Arrays.toString(repairedCode));
         } else {
+            repairedCode = hamming.repairBit2Bit(brokenCode, brokenBits);
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
     @Test
@@ -133,7 +136,7 @@ public class HammingTest {
         } else {
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
     @Test
@@ -156,7 +159,7 @@ public class HammingTest {
         } else {
             System.out.println("Brak uszkodzonego bitu.");
         }
-        assertEquals(code, repairedCode);
+        assertArrayEquals(code, repairedCode);
     }
 
 }
