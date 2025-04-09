@@ -26,14 +26,14 @@ public class HammingCode {
      * Wiersze reprezentują bity parzystości, a kolumny pozycje w słowie kodowym.
      */
     boolean[][] parityBitsControlMatrix2Bits = {
-            {true, false, true, false, true, false, true, false, true, false, false, false, false, false, false, false},
-            {false, true, true, false, false, true, true, false, false, true, false, false, false, false, false, false},
-            {false, false, false, true, true, true, true, false, false, false, true, false, false, false, false, false},
-            {false, false, false, false, false, false, false, true, false, false, false, true, false, false, false, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, true, false, false, false},
-            {false, false, true, true, false, false, false, false, false, false, false, false, false, true, false, false},
-            {false, false, false, false, true, true, false, false, false, false, false, false, false, false, true, false},
-            {false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, true}
+            {true,  true,  false, true,  true,  true,  false, true,   true,  false, false, false, false, false, false, false},
+            {true,  false, true,  true,  true,  false, true,  true,   false, true,  false, false, false, false, false, false},
+            {false, true,  true,  false, true,  true,  true,  true,   false, false, true,  false, false, false, false, false},
+            {true,  true,  false, false, true,  false, true,  false,  false, false, false, true,  false, false, false, false},
+            {true,  true,  true,  true,  false, false, false, true,   false, false, false, false, true,  false, false, false},
+            {true,  false, true,  true,  true,  true,  false, false,  false, false, false, false, false, true,  false, false},
+            {false, true,  true,  false, false, true,  true,  true,   false, false, false, false, false, false, true,  false},
+            {true,  false, false, true,  true,  true,  true,  true,   false, false, false, false, false, false, false, true}
     };
 
     /**
@@ -163,14 +163,14 @@ public class HammingCode {
 
         System.arraycopy(message, 0, code, 0, message.length);
 
-        code[8] = code[0] ^ code[2] ^ code[4] ^ code[6];
-        code[9] = code[1] ^ code[2] ^ code[5] ^ code[6];
-        code[10] = code[3] ^ code[4] ^ code[5] ^ code[6];
-        code[11] = code[7];
-        code[12] = code[0] ^ code[1];
-        code[13] = code[2] ^ code[3];
-        code[14] = code[4] ^ code[5];
-        code[15] = code[6] ^ code[7];
+        code[8] = code[0] ^ code[1] ^ code[3] ^ code[4] ^ code[5] ^ code[7];
+        code[9] = code[0] ^ code[2] ^ code[3] ^ code[4] ^ code[6] ^ code[7];
+        code[10] = code[1] ^ code[2] ^ code[4] ^ code[5] ^ code[6] ^ code[7];
+        code[11] = code[0] ^ code[1] ^ code[4] ^ code[6];
+        code[12] = code[0] ^ code[1] ^ code[2] ^ code[3] ^ code[7];
+        code[13] = code[0] ^ code[2] ^ code[3] ^ code[4] ^ code[5];
+        code[14] = code[1] ^ code[2] ^ code[5] ^ code[6] ^ code[7];
+        code[15] = code[0] ^ code[3] ^ code[4] ^ code[5] ^ code[6] ^ code[7];
 
         return code;
     }

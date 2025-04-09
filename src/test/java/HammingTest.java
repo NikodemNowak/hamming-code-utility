@@ -6,6 +6,7 @@ import org.zespol.HammingCode;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HammingTest {
 
