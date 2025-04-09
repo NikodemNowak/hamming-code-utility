@@ -5,25 +5,46 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Klasa odpowiedzialna za operacje na plikach, kodowanie i dekodowanie danych
+ * przy użyciu kodu Hamminga.
+ */
 public class FileOperations {
-    private int byteCount = 0;
+    /**
+     * Tablica bajtów reprezentująca flagi bitowe używane do operacji bitowych
+     * Każda pozycja odpowiada pojedynczemu bitowi (1, 2, 4, 8, 16, 32, 64, 128)
+     */
+    public static final byte[] BIT_FLAGS = {(byte) 1, (byte) 2, (byte) 4, (byte) 8, (byte) 16, (byte) 32,
+            (byte) 64, (byte) 128};
+    /**
+     * Instancja klasy HammingCode używana do kodowania i dekodowania danych
+     */
     private static final HammingCode hamming = new HammingCode();
 
-    public static final byte[] BIT_FLAGS = { (byte) 1, (byte) 2, (byte) 4, (byte) 8, (byte) 16, (byte) 32,
-            (byte) 64, (byte) 128 };
-
+    /**
+     * Odczytuje dane z pliku tekstowego.
+     *
+     * @param path Ścieżka do pliku (String)
+     * @return Tablica bajtów zawierająca dane z pliku lub null w przypadku błędu
+     */
     public byte[] readTextFromFile(String path) {
         File file = new File(path);
         byte[] byteArray = new byte[(int) file.length()];
         try (FileInputStream inputStream = new FileInputStream(file)) {
-           byteCount = inputStream.read(byteArray);
-           return byteArray;
+            inputStream.read(byteArray);
+            return byteArray;
         } catch (IOException e) {
             System.err.println("Błąd podczas odczytu pliku: " + e.getMessage());
             return null;
         }
     }
 
+    /**
+     * Koduje dane przy użyciu kodu Hamminga wykrywającego 2 bity błędów.
+     *
+     * @param byteArray Tablica bajtów do zakodowania
+     * @return Dwuwymiarowa tablica boolean zawierająca zakodowane dane
+     */
     public boolean[][] encodeData(byte[] byteArray) {
         int numBytes = byteArray.length;
         boolean[][] data = new boolean[numBytes][16];
@@ -31,13 +52,19 @@ public class FileOperations {
 
         for (int i = 0; i < numBytes; i++) {
             boolean[] temp = new boolean[8];
-            System.arraycopy(boolArray, i*8, temp, 0, 8);
+            System.arraycopy(boolArray, i * 8, temp, 0, 8);
             data[i] = hamming.messageToCode2Bits(temp);
         }
 
         return data;
     }
 
+    /**
+     * Zapisuje zakodowane dane do pliku.
+     *
+     * @param data Dwuwymiarowa tablica boolean z zakodowanymi danymi
+     * @param path Ścieżka do pliku docelowego (String)
+     */
     public void writeEncodedToFile(boolean[][] data, String path) {
         File file = new File(path);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
@@ -52,13 +79,19 @@ public class FileOperations {
         }
     }
 
+    /**
+     * Odczytuje zakodowane dane z pliku i naprawia ewentualne błędy.
+     *
+     * @param path Ścieżka do pliku (String)
+     * @return Dwuwymiarowa tablica boolean z odkodowanymi i naprawionymi danymi lub null w przypadku błędu
+     */
     public boolean[][] readEncodedFromFile(String path) {
         File file = new File(path);
 
         try (FileInputStream inputStream = new FileInputStream(file)) {
             // Odczytujemy zawartość pliku jako znaki
             byte[] byteArray = new byte[(int) file.length()];
-            byteCount = inputStream.read(byteArray);
+            inputStream.read(byteArray);
 
             // Konwertujemy znaki ASCII '0' i '1' na wartości logiczne
             int numCodeWords = byteArray.length / 16;
@@ -82,7 +115,12 @@ public class FileOperations {
         }
     }
 
-
+    /**
+     * Dekoduje dane zakodowane kodem Hamminga.
+     *
+     * @param data Dwuwymiarowa tablica boolean z zakodowanymi danymi
+     * @return Odkodowany tekst jako String w kodowaniu UTF-8
+     */
     public String decodeData(boolean[][] data) {
         byte[] bytes = new byte[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -98,6 +136,12 @@ public class FileOperations {
         return new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
     }
 
+    /**
+     * Zapisuje tekst do pliku.
+     *
+     * @param text Tekst do zapisania (String)
+     * @param path Ścieżka do pliku docelowego (String)
+     */
     public void writeTextTofile(String text, String path) {
         File file = new File(path);
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
@@ -107,6 +151,13 @@ public class FileOperations {
         }
     }
 
+    /**
+     * Konwertuje tablicę bajtów na tablicę wartości boolean.
+     * Każdy bajt jest reprezentowany przez 8 wartości boolean.
+     *
+     * @param input Tablica bajtów wejściowych
+     * @return Tablica boolean reprezentująca bity wejściowych bajtów
+     */
     public boolean[] bytesToBooleanArray(byte[] input) {
         boolean[] out = new boolean[input.length * 8];
 
