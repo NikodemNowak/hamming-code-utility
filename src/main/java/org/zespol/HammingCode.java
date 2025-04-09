@@ -35,7 +35,7 @@ public class HammingCode {
 
     public boolean[] calculateSyndrome1Bit(boolean[] code) {
         boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1Bit);
-        boolean[] resultCode = new boolean[4];
+        boolean[] syndrome = new boolean[4];
         boolean[][] temp = new boolean[code.length][transposedMatrix[0].length];
 
         for (int i=0; i<code.length; i++) {
@@ -46,16 +46,14 @@ public class HammingCode {
 
         for (boolean[] booleans : temp) {
             for (int j = 0; j < booleans.length; j++) {
-                resultCode[j] ^= booleans[j];
+                syndrome[j] ^= booleans[j];
             }
         }
 
-        System.out.println("Syndrom: " + Arrays.toString(resultCode));
-
-        return resultCode;
+        return syndrome;
     }
 
-    public void whichBitBroken1Bit(boolean[] resultCode){
+    public int whichBitBroken1Bit(boolean[] resultCode){
         boolean[][] transposedMatrix = transposeMatrix(parityBitsControlMatrix1Bit);
         for(int i=0; i<transposedMatrix.length; i++){
             boolean[] row = transposedMatrix[i];
@@ -67,11 +65,18 @@ public class HammingCode {
                 }
             }
             if(isBroekn){
-                System.out.println("Bit " + (i+1) + " jest uszkodzony.");
-                return;
+                return (i+1); // Zwracamy numer uszkodzonego bitu
             }
         }
-        System.out.println("Nie znaleziono uszkodzonego bitu.");
+        return -1; // Jeśli nie znaleziono uszkodzonego bitu, zwracamy -1
+    }
+
+    public boolean[] repairBit1Bit(boolean[] code, int brokenBit) {
+        brokenBit--; // Zmniejszamy o 1, aby uzyskać indeks tablicy
+        if (brokenBit >= 0 && brokenBit < code.length) {
+            code[brokenBit] = !code[brokenBit]; // Naprawiamy uszkodzony bit
+        }
+        return code;
     }
 
     public static boolean[][] transposeMatrix(boolean[][] matrix){
